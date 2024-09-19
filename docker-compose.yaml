@@ -13,7 +13,7 @@ services:
     networks:
       - ollama-docker
     ports:
-      - 4000:4000
+      - 11434:4000
   ollama:
     volumes:
       - /home/eduardoc/llama-service/Meta-Llama3.1-8B-Instruct:/root/.ollama/models/user-defined/Meta-Llama3.1-8B-Instruct
