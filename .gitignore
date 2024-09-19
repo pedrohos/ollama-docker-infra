@@ -1,0 +1,4 @@
+.vscode
+ollama/
+*.gguf
+*.ggml

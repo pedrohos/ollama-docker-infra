@@ -1,0 +1,92 @@
+services:
+  litellm:
+    container_name: litellm
+    build:
+      context: .
+      dockerfile: ./Dockerfile.litellm
+    volumes:
+      - ./litellm/config.yaml:/app/config.yaml:ro
+      - /var/run/docker.sock.raw:/var/run/docker.sock
+    depends_on:
+      - ollama
+      - ollama-2
+    networks:
+      - ollama-docker
+    ports:
+      - 4000:4000
+  ollama:
+    volumes:
+      - /home/eduardoc/llama-service/Meta-Llama3.1-8B-Instruct:/root/.ollama/models/user-defined/Meta-Llama3.1-8B-Instruct
+      - ./ollama/ollama:/root/.ollama
+    container_name: ollama
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
+    image: ollama/ollama:latest
+    ports:
+      - 7869:11434
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+    networks:
+      - ollama-docker
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+  
+  ollama-2:
+    volumes:
+      - /home/eduardoc/llama-service/Meta-Llama3.1-8B-Instruct:/root/.ollama/models/user-defined/Meta-Llama3.1-8B-Instruct
+      - ./ollama/ollama:/root/.ollama
+    container_name: ollama-2
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
+    image: ollama/ollama:latest
+    ports:
+      - 7870:11434
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      # - OLLAMA_HOST=[::]:11435
+    networks:
+      - ollama-docker
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  ollama-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: ollama-webui
+    volumes:
+      - ./ollama/ollama-webui:/app/backend/data
+      - /var/run/docker.sock.raw:/var/run/docker.sock
+    depends_on:
+      - ollama
+      - ollama-2
+      - litellm
+    ports:
+      - 9091:9091
+    environment: # https://docs.openwebui.com/getting-started/env-configuration#default_models
+      - OLLAMA_BASE_URL=http://ollama:11434 #comma separated ollama hosts
+      # - ENV=dev
+      - WEBUI_AUTH=False
+      # - WEBUI_NAME=valiantlynx AI
+      # - WEBUI_URL=http://localhost:9091
+      # - WEBUI_SECRET_KEY=t0p-s3cr3t
+      - PORT=9091
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped
+    networks:
+      - ollama-docker
+
+networks:
+  ollama-docker:
+    external: false
