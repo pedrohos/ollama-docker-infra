@@ -76,7 +76,7 @@ services:
     environment: # https://docs.openwebui.com/getting-started/env-configuration#default_models
       - OLLAMA_BASE_URL=http://ollama:11434 #comma separated ollama hosts
       # - ENV=dev
-      - WEBUI_AUTH=False
+      - WEBUI_AUTH=True
       # - WEBUI_NAME=valiantlynx AI
       # - WEBUI_URL=http://localhost:9091
       # - WEBUI_SECRET_KEY=t0p-s3cr3t

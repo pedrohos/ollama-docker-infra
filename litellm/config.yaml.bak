@@ -3,22 +3,22 @@ model_list:
     litellm_params:
       model: ollama_chat/llama3.1:8b-instruct-q6_K
       api_base: http://ollama:11434
-      rpm: 15      # Rate limit for this deployment: in requests per minute (rpm)
+      rpm: 3      # Rate limit for this deployment: in requests per minute (rpm)
   - model_name: llama3.1:8b-instruct-q6_K
     litellm_params:
       model: ollama_chat/llama3.1:8b-instruct-q6_K
       api_base: http://ollama-2:11434
-      rpm: 15
+      rpm: 3
   - model_name: llama3.1:8b-instruct-q8_0
     litellm_params:
       model: ollama_chat/llama3.1:8b-instruct-q8_0
       api_base: http://ollama:11434
-      rpm: 15
+      rpm: 3
   - model_name: llama3.1:8b-instruct-q8_0
     litellm_params:
       model: ollama_chat/llama3.1:8b-instruct-q8_0
       api_base: http://ollama-2:11434
-      rpm: 15
+      rpm: 3
 
 router_settings:
   routing_strategy: simple-shuffle # Literal["simple-shuffle", "least-busy", "usage-based-routing","latency-based-routing"], default="simple-shuffle"
